@@ -1,44 +1,29 @@
 import axios from 'axios';
+import { createBrowserHistory } from 'history';
+
+
+
+
+
+
+export const history: any = createBrowserHistory 
 
 
 export const DOMAIN = 'https://shop.cyberlearn.vn'
+
 export const ACCESS_TOKEN: string = 'accessToken'
-export const USER_LOGIN: string = 'user_login'
+export const USER_LOGIN: string = 'userLogin'
 
 
 
-export const http = axios.create({
-    baseURL : DOMAIN,
-    timeout: 3000
-})
 
-// cau hinh cho request
 
-http.interceptors.request.use((config: any)=>{
-    config.headers = {
-        ...config.headers, 
-        Authorization : 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
-    }
-    return config
-},
-(err) =>{
-    return Promise.reject(err);
-}
-)
 
-// cau hinh response
 
-// http.interceptors.response.use((response) => {
-//     return response
-// },
-// (errors) =>{
-//     if(errors.response.status === 400 || errors.response.status === 404){
-//         console.log(errors)
-//     }
-// }
-// )
+
 
 //Cấu hình các hàm get set storage cũng như cookie
+
 
 export const settings = {
     setStorageJson: (name: string, data: any): void => {
@@ -113,3 +98,41 @@ export const settings = {
     }
 
 }
+
+
+export const http = axios.create({
+    baseURL : DOMAIN,
+    timeout: 3000
+})
+
+// cau hinh cho request
+
+http.interceptors.request.use((config: any)=>{
+    config.headers = {
+        ...config.headers, 
+        Authorization : 'Bearer ' + settings.getStore(ACCESS_TOKEN)
+    }
+    return config
+},
+(err) =>{
+    return Promise.reject(err);
+}
+)
+
+
+
+// cau hinh response
+
+http.interceptors.response.use((response) => {
+    return response
+},
+(errors) =>{
+    if(errors.response?.status === 400 || errors.response?.status === 404){
+        history.push('/')
+    }else if(errors.response.status === 401 || errors.response.status === 403){
+        history.push('/login')
+    }
+    return Promise.reject(errors)
+}
+
+)

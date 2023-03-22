@@ -6,6 +6,7 @@ type Props = {}
 
 function Header({}: Props) {
     const { useLogin } = useSelector((state: RootState) => state.userLoginSlice);
+    console.log(useLogin)
     const renderProfile = () => {
         if (useLogin) {
             return <div className='carts flex-item'>
